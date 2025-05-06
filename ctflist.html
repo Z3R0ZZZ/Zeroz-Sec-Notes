@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CTF Notes - Zeroz</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #0f1117;
+      color: #e0e0e0;
+      font-family: Arial, sans-serif;
+      height: 100%;
+    }
+
+    nav.navbar {
+      width: 100%;
+      background-color: #151822;
+      padding: 15px 20px;
+    }
+
+    nav.navbar ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+      gap: 20px;
+    }
+
+    nav.navbar li {
+      margin: 0;
+    }
+
+    nav.navbar a {
+      color: #a7a7a7;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    nav.navbar a:hover {
+      color: #ffffff;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: row;
+      padding: 40px;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .markdown-note {
+      flex: 1 1 100%;
+      max-width: 100%;
+      text-align: left;
+      background-color: #1e1e2f;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+
+    .markdown-note h1, .markdown-note h2, .markdown-note h3 {
+      color: #00ff99;
+    }
+
+    .markdown-note pre {
+      background: #0f0f0f;
+      padding: 10px;
+      overflow: auto;
+      border-radius: 5px;
+    }
+
+    @media (min-width: 768px) {
+      .markdown-note {
+        flex: 1 1 48%;
+        max-width: 48%;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .markdown-note {
+        flex: 1 1 30%;
+        max-width: 30%;
+      }
+    }
+  </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="ctflist.html">CTF Writes-up</a></li>
+          <li><a href="maldevlist.html">Maldev</a></li>
+          <li><a href="toolslist.html">Tool</a></li>
+        </ul>
+      </nav>
+
+  <div class="content" id="notes-container">
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    const files = [
+      "note/ctf/DGSE2025.md",
+    ];
+
+    const container = document.getElementById('notes-container');
+
+    files.forEach(file => {
+      fetch(file)
+        .then(res => res.text())
+        .then(md => {
+          const div = document.createElement('div');
+          div.className = 'markdown-note';
+          div.innerHTML = marked.parse(md);
+          container.appendChild(div);
+        })
+        .catch(err => {
+          console.error(`Could not load ${file}:`, err);
+        });
+    });
+  </script>
+</body>
+</html>

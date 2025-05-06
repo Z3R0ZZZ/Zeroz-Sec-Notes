@@ -26,7 +26,6 @@
       z-index: 1;
     }
 
-    /* ✅ Transparent watermark logo in background */
     .bg-logo {
       position: fixed;
       top: 60%;
@@ -35,7 +34,7 @@
       max-width: 400px;
       aspect-ratio: 1 / 1;
       transform: translate(-50%, -50%);
-      background-image: url('bg-logo.png');
+      background-image: url('asset/bg-logo.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -44,6 +43,37 @@
       z-index: 0;
       pointer-events: none;
       border-radius: 50%;
+    }
+
+    nav.navbar {
+      width: 100%;
+      background-color: #151822;
+      padding: 15px 20px;
+    }
+
+    nav.navbar ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+      gap: 20px;
+    }
+
+    nav.navbar li {
+      margin: 0;
+    }
+
+    nav.navbar a {
+      color: #a7a7a7;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    nav.navbar a:hover {
+      color: #ffffff;
     }
 
     main {
@@ -114,6 +144,11 @@
     }
 
     @media (max-width: 600px) {
+      nav.navbar ul {
+        gap: 12px;
+        padding: 10px 0;
+      }
+
       footer {
         flex-direction: column-reverse;
         align-items: flex-end;
@@ -134,10 +169,18 @@
 </head>
 <body>
   <div class="bg-logo"></div>
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ctflist.html">CTF Writes-up</a></li>
+      <li><a href="maldevlist.html">Maldev</a></li>
+      <li><a href="toolslist.html">Tool</a></li>
+    </ul>
+  </nav>
 
   <main>
     <h1>Welcome to Zeroz-Sec-Notes</h1>
-    <p>This site contains my personal notes, write-ups, and experiments related to cybersecurity. Feel free to explore and learn with me.</p>
+    <p>Member of the french CTF team Psychobash, this site contains my personal notes, write-ups, and experiments related to cybersecurity. Feel free to explore and learn with me.</p>
 
     <a class="btn" href="https://www.root-me.org/ZeroZ?lang=fr#302d40e2aba5f08d2e693fdd63a33bd9" target="_blank">Root Me Account</a>
     <a class="btn" href="https://github.com/Z3R0ZZZ" target="_blank">GitHub</a>
@@ -148,7 +191,7 @@
       "Sometimes, the questions are complicated<br />
       and the answers are simple."
     </div>
-    <img src="L.png" alt="Logo" class="logo" />
+    <img src="asset/L.png" alt="Logo" class="logo" />
   </footer>
 </body>
 </html>
