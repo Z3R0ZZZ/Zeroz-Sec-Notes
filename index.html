@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zeroz-Sec-Notes</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #0f1117;
+      color: #e0e0e0;
+      font-family: Arial, sans-serif;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ✅ Transparent watermark logo in background */
+    .bg-logo {
+      position: fixed;
+      top: 60%;
+      left: 50%;
+      width: 40vw;
+      max-width: 400px;
+      aspect-ratio: 1 / 1;
+      transform: translate(-50%, -50%);
+      background-image: url('bg-logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.10;
+      filter: grayscale(100%);
+      z-index: 0;
+      pointer-events: none;
+      border-radius: 50%;
+    }
+
+    main {
+      flex: 1;
+      padding: 5vw;
+      text-align: center;
+      z-index: 1;
+    }
+
+    h1 {
+      color: #ffffff;
+      font-size: 2.5em;
+      margin-bottom: 0.5em;
+    }
+
+    p {
+      font-size: 1.2em;
+      margin-bottom: 22px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 8px;
+      padding: 15px 30px;
+      font-size: 1em;
+      color: #fff;
+      background-color: #1e1e2f;
+      border: 2px solid #7a7a7a;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.3s ease;
+      z-index: 1;
+    }
+
+    .btn:hover {
+      background-color: #a7a7a7;
+      color: #0f1117;
+    }
+
+    footer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 15px;
+      padding: 15px 20px;
+      flex-wrap: wrap;
+      z-index: 1;
+    }
+
+    .footer-text {
+      color: #888;
+      font-size: 0.9em;
+      max-width: 200px;
+      line-height: 1.4;
+      word-break: break-word;
+      text-align: right;
+    }
+
+    .logo {
+      width: 100px;
+      height: auto;
+      filter: brightness(0) invert(1);
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      footer {
+        flex-direction: column-reverse;
+        align-items: flex-end;
+        text-align: right;
+        gap: 8px;
+      }
+
+      .footer-text {
+        font-size: 0.75em;
+        max-width: 160px;
+      }
+
+      .logo {
+        width: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-logo"></div>
+
+  <main>
+    <h1>Welcome to Zeroz-Sec-Notes</h1>
+    <p>This site contains my personal notes, write-ups, and experiments related to cybersecurity. Feel free to explore and learn with me.</p>
+
+    <a class="btn" href="https://www.root-me.org/ZeroZ?lang=fr#302d40e2aba5f08d2e693fdd63a33bd9" target="_blank">Root Me Account</a>
+    <a class="btn" href="https://github.com/Z3R0ZZZ" target="_blank">GitHub</a>
+  </main>
+
+  <footer>
+    <div class="footer-text">
+      "Sometimes, the questions are complicated<br />
+      and the answers are simple."
+    </div>
+    <img src="L.png" alt="Logo" class="logo" />
+  </footer>
+</body>
+</html>
