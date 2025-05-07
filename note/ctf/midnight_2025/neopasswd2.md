@@ -114,6 +114,6 @@ apksigner sign \
 
 Now I launch the app :
 
-![alt text](note/ctf/midnight_2025/asset/neopasswd2_3.png)
+![alt text](note/ctf/midnight_2025/asset/neopasswd2_4.png)
 
 And it's done ;)
