@@ -5,7 +5,8 @@ For this challenge launched by the DGSE and Root-Me PRO on 2025, the main object
 
 Mission : 
 
-```The entity, confident in its words, has put a website online to display the organisations it has compromised. 
+```
+The entity, confident in its words, has put a website online to display the organisations it has compromised. 
 
 It has also set up a chat room where you can discuss and carry out transactions with the entity in order to recover the compromised data.
 
@@ -92,7 +93,7 @@ by analysing the history with `journalctl | grep COMMAND` (because history was c
 
 i found this :
 
-![alt text](note/ctf/asset/DGSENull1.png)
+![alt text](note/ctf/asset/DGSENull2.png)
 
 Quickly after I found out that this file was erased, but if it was recent then it sould be in memory ?
 
