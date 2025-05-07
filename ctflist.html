@@ -5,17 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CTF Notes - Zeroz</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
       background-color: #0f1117;
       color: #e0e0e0;
       font-family: Arial, sans-serif;
-      height: 100%;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     nav.navbar {
@@ -34,10 +33,6 @@
       gap: 20px;
     }
 
-    nav.navbar li {
-      margin: 0;
-    }
-
     nav.navbar a {
       color: #a7a7a7;
       text-decoration: none;
@@ -49,83 +44,191 @@
       color: #ffffff;
     }
 
-    .content {
+    .container {
+      flex: 1;
       display: flex;
       flex-direction: row;
-      padding: 40px;
-      gap: 30px;
-      flex-wrap: wrap;
+      overflow: hidden;
     }
 
-    .markdown-note {
-      flex: 1 1 100%;
-      max-width: 100%;
+    .sidebar {
+      width: 220px;
+      min-width: 180px;
+      background-color: #1e1e2f;
+      padding: 20px;
+      border-right: 1px solid #333;
+    }
+
+    .sidebar h2 {
+      color: #ffffff;
+      font-size: 1.2em;
+      margin-top: 0;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding-left: 10px;
+      margin: 0;
+    }
+
+    .sidebar li {
+      margin: 6px 0;
+    }
+
+    .sidebar button {
+      background: none;
+      border: none;
+      color: #a7a7a7;
       text-align: left;
+      cursor: pointer;
+      font-size: 1em;
+      width: 100%;
+      padding: 6px;
+      border-radius: 4px;
+      transition: background 0.2s, color 0.2s;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar button:hover {
+      background-color: #c9c9c9;
+      color: #0f1117;
+    }
+
+    .viewer {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .markdown {
       background-color: #1e1e2f;
       padding: 20px;
       border-radius: 10px;
       border: 1px solid #333;
     }
 
-    .markdown-note h1, .markdown-note h2, .markdown-note h3 {
-      color: #00ff99;
+    .markdown h1, .markdown h2, .markdown h3 {
+      color: #dbdbdb;
     }
 
-    .markdown-note pre {
+    .markdown pre {
       background: #0f0f0f;
       padding: 10px;
-      overflow: auto;
-      border-radius: 5px;
+      border-radius: 6px;
+      overflow-x: auto;
     }
 
-    @media (min-width: 768px) {
-      .markdown-note {
-        flex: 1 1 48%;
-        max-width: 48%;
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
       }
-    }
 
-    @media (min-width: 1200px) {
-      .markdown-note {
-        flex: 1 1 30%;
-        max-width: 30%;
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #333;
+      }
+
+      .viewer {
+        padding: 15px;
       }
     }
   </style>
 </head>
 <body>
-    <nav class="navbar">
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="ctflist.html">CTF Writes-up</a></li>
-          <li><a href="maldevlist.html">Maldev</a></li>
-          <li><a href="toolslist.html">Tool</a></li>
-        </ul>
-      </nav>
+  <nav class="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="ctflist.html">CTF Writes-up</a></li>
+      <li><a href="maldev.html">Maldev</a></li>
+      <li><a href="tools.html">Tool</a></li>
+    </ul>
+  </nav>
 
-  <div class="content" id="notes-container">
+  <div class="container">
+    <aside class="sidebar">
+      <h2>CTF notes list</h2>
+      <ul id="note-list"></ul>
+    </aside>
+
+    <section class="viewer">
+      <h2 id="note-title">Select a note</h2>
+      <div id="note-content" class="markdown">
+        <p>Nothing loaded yet.</p>
+      </div>
+    </section>
   </div>
+
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     const files = [
-      "note/ctf/DGSE2025.md",
+      "note/ctf/HTB/Sherlock/Loggy.md",
     ];
 
-    const container = document.getElementById('notes-container');
+    const noteList = document.getElementById("note-list");
+    const noteContent = document.getElementById("note-content");
+    const noteTitle = document.getElementById("note-title");
+
+    // Transform file paths into a nested tree structure
+    const hierarchy = {};
 
     files.forEach(file => {
-      fetch(file)
-        .then(res => res.text())
+      const relative = file.replace("note/ctf/", "");
+      const parts = relative.split('/');
+      let current = hierarchy;
+
+      parts.forEach((part, index) => {
+        const isFile = part.endsWith(".md");
+        const cleanName = part.replace(".md", "");
+
+        if (isFile) {
+          current[cleanName] = { path: file };
+        } else {
+          if (!current[part]) current[part] = {};
+          current = current[part];
+        }
+      });
+    });
+
+    function buildList(tree, parentUl) {
+      for (const key in tree) {
+        const li = document.createElement('li');
+
+        if (tree[key].path) {
+          const btn = document.createElement("button");
+          btn.textContent = key;
+          btn.title = key;
+          btn.onclick = () => loadNote(tree[key].path, key);
+          li.appendChild(btn);
+        } else {
+          const strong = document.createElement("strong");
+          strong.textContent = key;
+          li.appendChild(strong);
+
+          const subUl = document.createElement("ul");
+          buildList(tree[key], subUl);
+          li.appendChild(subUl);
+        }
+
+        parentUl.appendChild(li);
+      }
+    }
+
+    function loadNote(path, name) {
+      noteTitle.textContent = `📄 ${name}`;
+      fetch(path)
+        .then(res => res.ok ? res.text() : Promise.reject("Not found"))
         .then(md => {
-          const div = document.createElement('div');
-          div.className = 'markdown-note';
-          div.innerHTML = marked.parse(md);
-          container.appendChild(div);
+          noteContent.innerHTML = marked.parse(md);
         })
         .catch(err => {
-          console.error(`Could not load ${file}:`, err);
+          noteContent.innerHTML = `<p style="color:red;">❌ Error loading note.</p>`;
         });
-    });
+    }
+
+    buildList(hierarchy, noteList);
   </script>
 </body>
 </html>
