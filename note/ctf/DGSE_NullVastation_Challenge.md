@@ -1,5 +1,5 @@
 
-For this challenge launched by the DGSE and Root-Me PRO on 2025, the main objective was to find a member of the malicious group NullVastation, in order to do that, I needed to solve some challenges that 1) allowed access to the final challenge (OSINT) and 2 leaked some info about this mysterious member, here are all the notes I took during this chase
+For this challenge launched by the DGSE and Root-Me PRO on 2025, the main objective was to find a member of the malicious group NullVastation, in order to do that, I needed to solve some challenges that 1 allowed access to the final challenge (OSINT) and 2 leaked some info about this mysterious member, here are all the notes I took during this chase
 
 ## 1 : IA
 
