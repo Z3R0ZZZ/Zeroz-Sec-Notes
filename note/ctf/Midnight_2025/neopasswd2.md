@@ -3,11 +3,11 @@
 
 This challenge involved an Android application that asks us to create an account :
 
-![alt text](note/ctf/midnight_2025/asset/neopasswd2_0.png)
+![alt text](note/ctf/Midnight_2025/asset/neopasswd2_0.png)
 
 Once the account is created, we can see an interesting notification when we try to view messages :
 
-![alt text](note/ctf/midnight_2025/asset/neopasswd2_01.png)
+![alt text](note/ctf/Midnight_2025/asset/neopasswd2_01.png)
 
 So the objective is set ! I need to be an admin !
 
@@ -15,7 +15,7 @@ So the objective is set ! I need to be an admin !
 
 #### Be an admin :
 
-![alt text](note/ctf/midnight_2025/asset/neopasswd2_1.png)
+![alt text](note/ctf/Midnight_2025/asset/neopasswd2_1.png)
 
 I can clearly see that it will only require a patch.
 
@@ -23,7 +23,7 @@ I can clearly see that it will only require a patch.
 
 Still into MainActivity :
 
-![alt text](note/ctf/midnight_2025/asset/neopasswd2_2.png)
+![alt text](note/ctf/Midnight_2025/asset/neopasswd2_2.png)
 
 Being admin might not be the only condition to see the message and `decrypted != null` prove it.
 
@@ -33,7 +33,7 @@ Let's find what exactly defines if decrypted is null or not
 
 After some research about this `decrypted` condition I found this :
 
-![alt text](note/ctf/midnight_2025/asset/neopasswd2_3.png)
+![alt text](note/ctf/Midnight_2025/asset/neopasswd2_3.png)
 
 I notice that getMaxAllowedLength is set to 3. However it must be superior to the Ciphered text in order to ensure that decrypted isn't null (Cipher text : Mszhl+UnftsTwm7Ule0V28WQMptqd8uoc4AbDSBKavw=)
 
@@ -114,6 +114,6 @@ apksigner sign \
 
 Now I launch the app :
 
-![alt text](note/ctf/midnight_2025/asset/neopasswd2_4.png)
+![alt text](note/ctf/Midnight_2025/asset/neopasswd2_4.png)
 
 And it's done ;)
