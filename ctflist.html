@@ -217,7 +217,7 @@
     }
 
     function loadNote(path, name) {
-      noteTitle.textContent = `📄 ${name}`;
+      noteTitle.textContent = `${name}`;
       fetch(path)
         .then(res => res.ok ? res.text() : Promise.reject("Not found"))
         .then(md => {

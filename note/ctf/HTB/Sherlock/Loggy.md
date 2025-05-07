@@ -21,7 +21,7 @@ The call to the WriteFile function is the suspicious one.
 # Task 6: Data transfer domain
 
 I find `main.sendFilesViaFTP` and deduce that the name must be used here:
-![alt text](asset/Loggy1.png)
+![alt text](note/ctf/HTB/Sherlock/asset/Loggy1.png)
 
 I notice `github.com/jlaffaye/ftp::github.com/jlaffaye/ftp.Dial(sVar9, options)` which initiates communication with `sVar9`.
 
@@ -31,7 +31,7 @@ By analyzing `sVar9`, I find the corresponding string: gotthem.htb
 
 I look into the `main.sendFilesViaFTP` function and find something interesting:
 
-![alt text](asset/Loggy2.png)
+![alt text](note/ctf/HTB/Sherlock/asset/Loggy2.png)
 
 I find that the password length is 17 and the username length is 11.
 
