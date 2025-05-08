@@ -157,7 +157,7 @@
 
   <div class="container">
     <aside class="sidebar">
-      <h2>CTF notes list</h2>
+      <h2>Tools note</h2>
       <ul id="note-list"></ul>
     </aside>
 
@@ -172,10 +172,6 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     const files = [
-      "note/ctf/DGSE_NullVastation_Challenge.md",
-      "note/ctf/HTB/Sherlock/Loggy.md",
-      "note/ctf/Midnight_2025/neopasswd2.md",
-      "note/ctf/Midnight_2025/Blackdoor.md"
     ];
 
     const noteList = document.getElementById("note-list");
@@ -184,7 +180,7 @@
     const hierarchy = {};
 
     files.forEach(file => {
-      const relative = file.replace("note/ctf/", "");
+      const relative = file.replace("note/tools/", "");
       const parts = relative.split('/');
       let current = hierarchy;
 
