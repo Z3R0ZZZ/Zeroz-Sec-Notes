@@ -143,6 +143,34 @@
         margin: 20px auto;
     }
 
+    .sidebar .folder {
+      cursor: pointer;
+      font-weight: bold;
+      color: #ffffff;
+      margin: 6px 0;
+    }
+    
+    .sidebar .folder::before {
+      content: "▸";
+      display: inline-block;
+      width: 1em;
+      margin-right: 5px;
+      transition: transform 0.2s ease;
+    }
+    
+    .sidebar .folder.open::before {
+      content: "▾";
+    }
+    
+    .sidebar ul.collapsible {
+      display: none;
+      margin-left: 15px;
+    }
+    
+    .sidebar ul.collapsible.open {
+      display: block;
+    }
+
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -225,28 +253,36 @@
     });
 
     function buildList(tree, parentUl) {
-      for (const key in tree) {
-        const li = document.createElement('li');
+    for (const key in tree) {
+      const li = document.createElement('li');
 
-        if (tree[key].path) {
-          const btn = document.createElement("button");
-          btn.textContent = key;
-          btn.title = key;
-          btn.onclick = () => loadNote(tree[key].path, key);
-          li.appendChild(btn);
-        } else {
-          const strong = document.createElement("strong");
-          strong.textContent = key;
-          li.appendChild(strong);
+      if (tree[key].path) {
+        const btn = document.createElement("button");
+        btn.textContent = key;
+        btn.title = key;
+        btn.onclick = () => loadNote(tree[key].path, key);
+        li.appendChild(btn);
+      } else {
+        const folderLabel = document.createElement("span");
+        folderLabel.className = "folder";
+        folderLabel.textContent = key;
 
-          const subUl = document.createElement("ul");
-          buildList(tree[key], subUl);
-          li.appendChild(subUl);
-        }
+        const subUl = document.createElement("ul");
+        subUl.className = "collapsible";
 
-        parentUl.appendChild(li);
+        folderLabel.onclick = () => {
+          const isOpen = subUl.classList.toggle("open");
+          folderLabel.classList.toggle("open", isOpen);
+        };
+
+        li.appendChild(folderLabel);
+        li.appendChild(subUl);
+        buildList(tree[key], subUl);
       }
+
+      parentUl.appendChild(li);
     }
+  }
 
     function loadNote(path, name) {
       noteTitle.textContent = `${name}`;

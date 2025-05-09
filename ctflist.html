@@ -143,6 +143,34 @@
         margin: 20px auto;
     }
 
+    .sidebar .folder {
+      cursor: pointer;
+      font-weight: bold;
+      color: #ffffff;
+      margin: 6px 0;
+    }
+    
+    .sidebar .folder::before {
+      content: "▸";
+      display: inline-block;
+      width: 1em;
+      margin-right: 5px;
+      transition: transform 0.2s ease;
+    }
+    
+    .sidebar .folder.open::before {
+      content: "▾";
+    }
+    
+    .sidebar ul.collapsible {
+      display: none;
+      margin-left: 15px;
+    }
+    
+    .sidebar ul.collapsible.open {
+      display: block;
+    }
+
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -185,79 +213,88 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script>
-    const files = [
-      "note/ctf/DGSE_NullVastation_Challenge.md",
-      "note/ctf/HTB/Sherlock/Loggy.md",
-      "note/ctf/HTB/Sherlock/Brutus.md",
-      "note/ctf/Midnight_2025/neopasswd2.md",
-      "note/ctf/Midnight_2025/Blackdoor.md",
-      "note/ctf/HACKDAY_2025/Final/Hardware_sumodroid.md",
-      "note/ctf/HACKDAY_2025/Final/Reverse_Ransom.md",
-      "note/ctf/HACKDAY_2025/Qualif/Steg_OSINT_Well-hidden-message.md"
-    ];
+<script>
+  const files = [
+    "note/ctf/DGSE_NullVastation_Challenge.md",
+    "note/ctf/HTB/Sherlock/Loggy.md",
+    "note/ctf/HTB/Sherlock/Brutus.md",
+    "note/ctf/Midnight_2025/neopasswd2.md",
+    "note/ctf/Midnight_2025/Blackdoor.md",
+    "note/ctf/HACKDAY_2025/Final/Hardware_sumodroid.md",
+    "note/ctf/HACKDAY_2025/Final/Reverse_Ransom.md",
+    "note/ctf/HACKDAY_2025/Qualif/Steg_OSINT_Well-hidden-message.md"
+  ];
 
-    const noteList = document.getElementById("note-list");
-    const noteContent = document.getElementById("note-content");
-    const noteTitle = document.getElementById("note-title");
-    const hierarchy = {};
+  const noteList = document.getElementById("note-list");
+  const noteContent = document.getElementById("note-content");
+  const noteTitle = document.getElementById("note-title");
+  const hierarchy = {};
 
-    files.forEach(file => {
-      const relative = file.replace("note/ctf/", "");
-      const parts = relative.split('/');
-      let current = hierarchy;
+  files.forEach(file => {
+    const relative = file.replace("note/ctf/", "");
+    const parts = relative.split('/');
+    let current = hierarchy;
 
-      parts.forEach((part, index) => {
-        const isFile = part.endsWith(".md");
-        const cleanName = part.replace(".md", "");
+    parts.forEach((part, index) => {
+      const isFile = part.endsWith(".md");
+      const cleanName = part.replace(".md", "");
 
-        if (isFile) {
-          current[cleanName] = { path: file };
-        } else {
-          if (!current[part]) current[part] = {};
-          current = current[part];
-        }
-      });
-    });
-
-    function buildList(tree, parentUl) {
-      for (const key in tree) {
-        const li = document.createElement('li');
-
-        if (tree[key].path) {
-          const btn = document.createElement("button");
-          btn.textContent = key;
-          btn.title = key;
-          btn.onclick = () => loadNote(tree[key].path, key);
-          li.appendChild(btn);
-        } else {
-          const strong = document.createElement("strong");
-          strong.textContent = key;
-          li.appendChild(strong);
-
-          const subUl = document.createElement("ul");
-          buildList(tree[key], subUl);
-          li.appendChild(subUl);
-        }
-
-        parentUl.appendChild(li);
+      if (isFile) {
+        current[cleanName] = { path: file };
+      } else {
+        if (!current[part]) current[part] = {};
+        current = current[part];
       }
-    }
+    });
+  });
 
-    function loadNote(path, name) {
-      noteTitle.textContent = `${name}`;
-      fetch(path)
-        .then(res => res.ok ? res.text() : Promise.reject("Not found"))
-        .then(md => {
-          noteContent.innerHTML = marked.parse(md);
-        })
-        .catch(err => {
-          noteContent.innerHTML = `<p style="color:red;">❌ Error loading note.</p>`;
-        });
-    }
+  function buildList(tree, parentUl) {
+    for (const key in tree) {
+      const li = document.createElement('li');
 
-    buildList(hierarchy, noteList);
-  </script>
+      if (tree[key].path) {
+        const btn = document.createElement("button");
+        btn.textContent = key;
+        btn.title = key;
+        btn.onclick = () => loadNote(tree[key].path, key);
+        li.appendChild(btn);
+      } else {
+        const folderLabel = document.createElement("span");
+        folderLabel.className = "folder";
+        folderLabel.textContent = key;
+
+        const subUl = document.createElement("ul");
+        subUl.className = "collapsible";
+
+        folderLabel.onclick = () => {
+          const isOpen = subUl.classList.toggle("open");
+          folderLabel.classList.toggle("open", isOpen);
+        };
+
+        li.appendChild(folderLabel);
+        li.appendChild(subUl);
+        buildList(tree[key], subUl);
+      }
+
+      parentUl.appendChild(li);
+    }
+  }
+
+  function loadNote(path, name) {
+    noteTitle.textContent = `${name}`;
+    fetch(path)
+      .then(res => res.ok ? res.text() : Promise.reject("Not found"))
+      .then(md => {
+        noteContent.innerHTML = marked.parse(md);
+      })
+      .catch(err => {
+        noteContent.innerHTML = `<p style="color:red;">❌ Error loading note.</p>`;
+      });
+  }
+
+  buildList(hierarchy, noteList);
+</script>
+
 </body>
 <div class="background"></div>
 </html>
