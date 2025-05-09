@@ -1,3 +1,5 @@
+https://app.hackthebox.com/sherlocks/Loggy
+
 # Task 1: SHA256 hash
 
 `sha256sum Loggy.exe => 6acd8a362def62034cbd011e6632ba5120196e2011c83dc6045fcb28b590457c`

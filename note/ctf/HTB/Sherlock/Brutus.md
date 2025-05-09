@@ -1,3 +1,5 @@
+https://app.hackthebox.com/sherlocks/Brutus
+
 # task 1: find the attacker's IP
 
 I notice in the logs many failed requests coming from 65.2.161.68, so I deduce that this IP is attempting a brute-force attack on the service.
