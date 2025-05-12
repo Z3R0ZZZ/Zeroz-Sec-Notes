@@ -1,6 +1,10 @@
 The goal of this challenge was to decrypt `flag.txt`, which was encrypted by the `challenge` binary.
 
+You can download this challenge here : [Ransom](challenges/challenge)
+
 A date is also mentionned : 2025-03-26 22:11:00 this will be usefull
+
+Tool used : Binary ninja
 
 To do this, I need to analyze the ransomware written in C++:
 
