@@ -1,5 +1,3 @@
-You can download this challenge here: [dockerflag](challenges/dockerflag.tar)
-
 While exploring the ship’s computer system, you stumble upon an old project made a long time ago, in a galaxy far, far away. The project was quickly abandoned and deleted from your internal GitLab… but maybe the Docker image of the website you now have still holds a few well-kept secrets...
 
 #### Solve :
