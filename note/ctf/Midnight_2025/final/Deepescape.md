@@ -1,5 +1,3 @@
-You can download this challenge here : [deepescape.zip](challenges/deepescape.zip)
-
 ```
 Everything seemed quiet on the meridion.tech domain network... until the SOC detected suspicious activity on the domain controller. Your role: inspect the network traffic and trace the chain of events.
 
