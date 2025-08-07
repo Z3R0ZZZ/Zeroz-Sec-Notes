@@ -179,13 +179,13 @@
       <li><a href="index.html">Home</a></li>
       <li><a href="ctflist.html">CTF Writes-up</a></li>
       <li><a href="maldevlist.html">Maldev</a></li>
-      <li><a href="toolslist.html">Tool</a></li>
+      <li><a href="techlist.html">Techniques</a></li>
     </ul>
   </nav>
 
   <div class="container">
     <aside class="sidebar">
-      <h2>Tools note</h2>
+      <h2>Techniques and experiments related to hacking</h2>
       <ul id="note-list"></ul>
     </aside>
 
@@ -208,7 +208,7 @@
     const hierarchy = {};
 
     files.forEach(file => {
-      const relative = file.replace("note/tools/", "");
+      const relative = file.replace("note/tech/", "");
       const parts = relative.split('/');
       let current = hierarchy;
 
