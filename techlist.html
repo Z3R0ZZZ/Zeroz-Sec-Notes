@@ -215,7 +215,7 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     const files = [
-      "/note/tech/AD_&_WINDOWS/sAMAccountName_spoofing.md"
+      "note/tech/AD_&_WINDOWS/sAMAccountName_spoofing.md"
     ];
 
     const noteList = document.getElementById("note-list");
@@ -225,7 +225,6 @@
 
     files.forEach(file => {
       const relative = file.replace("note/tech/", "");
-      const relative1 = file.replace("_", " ");
       const parts = relative.split('/');
       let current = hierarchy;
 
