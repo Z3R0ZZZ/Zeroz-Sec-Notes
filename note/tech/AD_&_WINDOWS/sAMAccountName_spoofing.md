@@ -1,5 +1,3 @@
-# sAMAccountName spoofing
-
 ## What is sAMAccountName spoofing ?
 
 **sAMAccountName** is the unique ID for a user, it looks like this: NETBIOS\USERNAME.
