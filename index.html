@@ -38,11 +38,26 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      opacity: 0.10;
+      opacity: 0.15;
       filter: grayscale(100%);
       z-index: 0;
       pointer-events: none;
       border-radius: 50%;
+    }
+
+    .background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('asset/bg_index.gif');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.08;
+        z-index: -1;
+        pointer-events: none;
     }
 
     nav.navbar {
@@ -197,4 +212,5 @@
     <img src="asset/L.png" alt="Logo" class="logo" />
   </footer>
 </body>
+<div class="background"></div>
 </html>
