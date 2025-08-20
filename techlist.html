@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Zeroz-Sec-Notes</title>
+
   <style>
     * { box-sizing: border-box; }
 
@@ -40,23 +41,17 @@
       transition: color 0.3s;
     }
 
-    nav.navbar a:hover {
-      color: #ffffff;
-    }
+    nav.navbar a:hover { color: #ffffff; }
 
     .background {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: url('asset/bg-techlist.png');
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-        opacity: 0.08;
-        z-index: -1;
-        pointer-events: none;
+      position: fixed; inset: 0;
+      background-image: url('asset/bg-techlist.png');
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.08;
+      z-index: -1;
+      pointer-events: none;
     }
 
     .container {
@@ -74,119 +69,92 @@
       border-right: 1px solid #333;
     }
 
-    .sidebar h2 {
-      color: #ffffff;
-      font-size: 1.2em;
-      margin-top: 0;
-    }
-
-    .sidebar ul {
-      list-style: none;
-      padding-left: 10px;
-      margin: 0;
-    }
-
-    .sidebar li {
-      margin: 6px 0;
-    }
+    .sidebar h2 { color: #ffffff; font-size: 1.2em; margin-top: 0; }
+    .sidebar ul { list-style: none; padding-left: 10px; margin: 0; }
+    .sidebar li { margin: 6px 0; }
 
     .sidebar button {
-      background: none;
-      border: none;
-      color: #a7a7a7;
-      text-align: left;
-      cursor: pointer;
-      font-size: 1em;
-      width: 100%;
-      padding: 6px;
-      border-radius: 4px;
-      transition: background 0.2s, color 0.2s;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+      background: none; border: none; color: #a7a7a7; text-align: left;
+      cursor: pointer; font-size: 1em; width: 100%; padding: 6px; border-radius: 4px;
+      transition: background 0.2s, color 0.2s; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
     }
+    .sidebar button:hover { background-color: #c9c9c9; color: #0f1117; }
 
-    .sidebar button:hover {
-      background-color: #c9c9c9;
-      color: #0f1117;
-    }
-
-    .viewer {
-      flex: 1;
-      padding: 30px;
-      overflow-y: auto;
-    }
+    .viewer { flex: 1; padding: 30px; overflow-y: auto; }
 
     .markdown {
       background-color: #1e1e2f;
       padding: 20px;
       border-radius: 10px;
       border: 1px solid #333;
+      line-height: 1.6;
+    }
+    .markdown h1, .markdown h2, .markdown h3 { color: #dbdbdb; }
+    .markdown p { margin: 0.6em 0; }
+    .markdown ul, .markdown ol { padding-left: 1.4em; }
+    .markdown blockquote {
+      margin: 1em 0; padding: .6em 1em;
+      border-left: 4px solid #4b5563; background: #161925; color: #d1d5db;
+      border-radius: 6px;
     }
 
-    .markdown h1, .markdown h2, .markdown h3 {
-      color: #dbdbdb;
+    .markdown code {
+      background: #0f0f0f;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.95em;
     }
-
     .markdown pre {
       background: #0f0f0f;
-      padding: 10px;
-      border-radius: 6px;
+      padding: 12px 14px;
+      border-radius: 8px;
       overflow-x: auto;
     }
+    .markdown pre code { background: transparent; padding: 0; }
+
+    .markdown table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1em 0;
+      background: #141726;
+      border: 1px solid #2b2f3d;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .markdown th, .markdown td {
+      border: 1px solid #2b2f3d;
+      padding: 8px 10px;
+      vertical-align: top;
+    }
+    .markdown th {
+      background: #1b1f2e;
+      color: #e5e7eb;
+      text-align: left;
+    }
+    .markdown tr:nth-child(even) td { background: #171b2a; }
 
     .markdown img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 6px;
-        display: block;
-        margin: 20px auto;
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      display: block;
+      margin: 20px auto;
     }
 
-    .sidebar .folder {
-      cursor: pointer;
-      font-weight: bold;
-      color: #ffffff;
-      margin: 6px 0;
-    }
-    
-    .sidebar .folder::before {
-      content: "▸";
-      display: inline-block;
-      width: 1em;
-      margin-right: 5px;
-      transition: transform 0.2s ease;
-    }
-    
-    .sidebar .folder.open::before {
-      content: "▾";
-    }
-    
-    .sidebar ul.collapsible {
-      display: none;
-      margin-left: 15px;
-    }
-    
-    .sidebar ul.collapsible.open {
-      display: block;
-    }
+    .sidebar .folder { cursor: pointer; font-weight: bold; color: #ffffff; margin: 6px 0; }
+    .sidebar .folder::before { content: "▸"; display: inline-block; width: 1em; margin-right: 5px; transition: transform 0.2s ease; }
+    .sidebar .folder.open::before { content: "▾"; }
+    .sidebar ul.collapsible { display: none; margin-left: 15px; }
+    .sidebar ul.collapsible.open { display: block; }
 
     @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #333;
-      }
-
-      .viewer {
-        padding: 15px;
-      }
+      .container { flex-direction: column; }
+      .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #333; }
+      .viewer { padding: 15px; }
     }
   </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/default.min.css">
 </head>
 <body>
   <nav class="navbar">
@@ -211,8 +179,9 @@
       </div>
     </section>
   </div>
-
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/common.min.js"></script>
+
   <script>
     const files = [
       "note/tech/AD_&_WINDOWS/sAMAccountName_spoofing.md",
@@ -223,16 +192,28 @@
     const noteContent = document.getElementById("note-content");
     const noteTitle = document.getElementById("note-title");
     const hierarchy = {};
-
+    marked.setOptions({
+      gfm: true,
+      breaks: false,
+      headerIds: true,
+      mangle: false,
+      highlight: (code, lang) => {
+        try {
+          if (lang && hljs.getLanguage(lang)) {
+            return hljs.highlight(code, {language: lang}).value;
+          }
+        } catch(e) {}
+        return hljs.highlightAuto(code).value;
+      }
+    });
     files.forEach(file => {
       const relative = file.replace("note/tech/", "");
       const parts = relative.split('/');
       let current = hierarchy;
 
-      parts.forEach((part, index) => {
+      parts.forEach((part) => {
         const isFile = part.endsWith(".md");
         const cleanName = part.replace(".md", "");
-
         if (isFile) {
           current[cleanName] = { path: file };
         } else {
@@ -243,51 +224,60 @@
     });
 
     function buildList(tree, parentUl) {
-    for (const key in tree) {
-      const li = document.createElement('li');
+      for (const key in tree) {
+        const li = document.createElement('li');
 
-      if (tree[key].path) {
-        const btn = document.createElement("button");
-        btn.textContent = key;
-        btn.title = key;
-        btn.onclick = () => loadNote(tree[key].path, key);
-        li.appendChild(btn);
-      } else {
-        const folderLabel = document.createElement("span");
-        folderLabel.className = "folder";
-        folderLabel.textContent = key;
+        if (tree[key].path) {
+          const btn = document.createElement("button");
+          btn.textContent = key;
+          btn.title = key;
+          btn.onclick = () => loadNote(tree[key].path, key);
+          li.appendChild(btn);
+        } else {
+          const folderLabel = document.createElement("span");
+          folderLabel.className = "folder";
+          folderLabel.textContent = key;
 
-        const subUl = document.createElement("ul");
-        subUl.className = "collapsible";
+          const subUl = document.createElement("ul");
+          subUl.className = "collapsible";
 
-        folderLabel.onclick = () => {
-          const isOpen = subUl.classList.toggle("open");
-          folderLabel.classList.toggle("open", isOpen);
-        };
+          folderLabel.onclick = () => {
+            const isOpen = subUl.classList.toggle("open");
+            folderLabel.classList.toggle("open", isOpen);
+          };
 
-        li.appendChild(folderLabel);
-        li.appendChild(subUl);
-        buildList(tree[key], subUl);
+          li.appendChild(folderLabel);
+          li.appendChild(subUl);
+          buildList(tree[key], subUl);
+        }
+
+        parentUl.appendChild(li);
       }
-
-      parentUl.appendChild(li);
     }
-  }
 
     function loadNote(path, name) {
       noteTitle.textContent = `${name}`;
       fetch(path)
         .then(res => res.ok ? res.text() : Promise.reject("Not found"))
         .then(md => {
-          noteContent.innerHTML = marked.parse(md);
+          // Rendu Markdown -> HTML
+          const html = marked.parse(md);
+          noteContent.innerHTML = html;
+
+          // Sécurise les liens pour s’ouvrir dans un nouvel onglet
+          noteContent.querySelectorAll('a[href]').forEach(a => {
+            a.setAttribute('target', '_blank');
+            a.setAttribute('rel', 'noopener');
+          });
         })
-        .catch(err => {
+        .catch(() => {
           noteContent.innerHTML = `<p style="color:red;">❌ Error loading note.</p>`;
         });
     }
 
     buildList(hierarchy, noteList);
   </script>
+
+  <div class="background"></div>
 </body>
-<div class="background"></div>
 </html>
