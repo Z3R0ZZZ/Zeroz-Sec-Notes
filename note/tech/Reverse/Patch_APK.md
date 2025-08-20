@@ -177,6 +177,42 @@ And call our fake method : `invoke-virtual {p0}, Lcom/example/neopasswd2/MainAct
 
 Meaning we can also control called methods !
 
+### Patch condition :
+
+let's have a look at this :
+
+```
+if (str.equals("a2a3d412e92d896134d9c9126d756f")) {
+```
+
+this condition look like this :
+
+```
+    const-string p1, ""
+
+    :goto_1
+    const-string v1, "a2a3d412e92d896134d9c9126d756f"
+
+    .line 2
+    invoke-virtual {p1, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
+    move-result p1
+
+    if-eqz p1, :cond_1
+
+    iget-object p1, p0, Lcom/example/apkey/MainActivity$a;->b:Lcom/example/apkey/MainActivity;
+
+    invoke-virtual {p1}, Landroid/app/Activity;->getApplicationContext()Landroid/content/Context;
+
+    move-result-object p1
+```
+
+If we want to invert the condition (equal a2a3d412e92d896134d9c9126d756f)
+
+We need to modify this : `if-eqz p1, :cond_1` by its opposite, which is : `if-nez p1, :cond_1`
+
+Now the condition is inverted and we bypass the pass checker !
+
 # 4 : Build your patched APK
 
 When you’re done with modifications, just use :
