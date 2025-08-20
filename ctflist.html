@@ -164,18 +164,11 @@
       mangle: false,
       highlight: (code, lang) => {
         try {
-          if (code && code.length > 20000) return code;
-
-          if (lang) {
-            const l = String(lang).toLowerCase();
-            if (hljs.getLanguage(l)) {
-              return hljs.highlight(code, { language: l, ignoreIllegals: true }).value;
-            }
+          if (lang && hljs.getLanguage(lang)) {
+            return hljs.highlight(code, { language: lang }).value;
           }
-          return hljs.highlightAuto(code, { ignoreIllegals: true }).value;
-        } catch (e) {
-          return code;
-        }
+        } catch(e) {}
+        return hljs.highlightAuto(code).value;
       }
     });
 
@@ -220,7 +213,7 @@
         const m = (code.className || '').match(/language-([a-z0-9+\-#]+)/i);
         const lang = (m ? m[1] : 'text').toUpperCase();
 
-        try { hljs.highlightElement(code); } catch {}
+        hljs.highlightElement(code);
 
         const pre = code.parentElement;
         if (!pre.querySelector('.code-head')) {
@@ -238,12 +231,16 @@
           btn.addEventListener('click', async () => {
             try {
               await navigator.clipboard.writeText(code.innerText);
-              const old = btn.textContent; btn.textContent = 'Copied!';
+              const old = btn.textContent;
+              btn.textContent = 'Copied!';
               setTimeout(() => (btn.textContent = old), 1200);
             } catch (_) {
-              const sel = window.getSelection(), range = document.createRange();
-              range.selectNodeContents(code); sel.removeAllRanges(); sel.addRange(range);
-              document.execCommand('copy'); sel.removeAllRanges();
+              const sel = window.getSelection();
+              const range = document.createRange();
+              range.selectNodeContents(code);
+              sel.removeAllRanges(); sel.addRange(range);
+              document.execCommand('copy');
+              sel.removeAllRanges();
             }
           });
 
@@ -257,20 +254,20 @@
     function loadNote(path, name) {
       noteTitle.textContent = `${name}`;
       fetch(path)
-        .then(res => res.ok ? res.text() : Promise.reject(`${res.status} ${res.statusText || ''}`.trim()))
+        .then(res => res.ok ? res.text() : Promise.reject("Not found"))
         .then(md => {
           const html = marked.parse(md);
           noteContent.innerHTML = html;
 
           noteContent.querySelectorAll('a[href]').forEach(a => {
-            a.setAttribute('target', '_blank'); a.setAttribute('rel', 'noopener');
+            a.setAttribute('target', '_blank');
+            a.setAttribute('rel', 'noopener');
           });
 
           enhanceCodeBlocks(noteContent);
         })
-        .catch((err) => {
-          console.error('Load/render error:', err);
-          noteContent.innerHTML = `<p style="color:#ff6b6b; background:#1a1d2b; border:1px solid #2b2f3d; padding:.8em 1em; border-radius:8px;">❌ Error loading note: <code>${String(err)}</code></p>`;
+        .catch(() => {
+          noteContent.innerHTML = `<p style="color:red;">❌ Error loading note.</p>`;
         });
     }
 
