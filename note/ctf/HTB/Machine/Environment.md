@@ -51,7 +51,7 @@ eyJpdiI6IlV4Wk9SajFzVTkrbUhJVC83cHZ4V2c9PSIsInZhbHVlIjoic0ZIZDJ5T3ZPLzlGVXQ4a2Ft
 ```
 
 which translates to:
-{"iv":"UxZORj1sU9+mHIT/7pvxWg==","value":"sFHd2yOvO/9FUt8kamCUEKJ6p4Bsfa00b80FePN6DDgoHPbOYQYuRAY3h9BmOtOvRdcpUmgMD5Y6NHGhbchMFvmR8dHRo5bJKQkZWh8LH/4tgATqjo883nrNxCWIudHr","mac":"e8f08aa212b068b1a8ed705125f05625551508b8303e4b9f50f6dfdc81127495","tag":""}
+`{"iv":"UxZORj1sU9+mHIT/7pvxWg==","value":"sFHd2yOvO/9FUt8kamCUEKJ6p4Bsfa00b80FePN6DDgoHPbOYQYuRAY3h9BmOtOvRdcpUmgMD5Y6NHGhbchMFvmR8dHRo5bJKQkZWh8LH/4tgATqjo883nrNxCWIudHr","mac":"e8f08aa212b068b1a8ed705125f05625551508b8303e4b9f50f6dfdc81127495","tag":""}`
 
 Laravel session:
 
@@ -60,7 +60,7 @@ eyJpdiI6IjA2ZEpPdTZOZWtkbC9LYXNOd2pveEE9PSIsInZhbHVlIjoiQm1wb3BGSlJHQWJjYmlCQjBz
 ```
 
 which translates to:
-{"iv":"06dJOu6Nekdl/KasNwjoxA==","value":"BmpopFJRGAbcbiBB0sTlfa5lrOzDVCkmwLOlV7afSFEimJbgnTjS43HjwKpAADMun8rk5gwK5xiLfu8vBUXLB9vEmXY46pyhZt+anMj0Phr9ikkj/hyyPIecPreoJAtn","mac":"8d47f79f84a4168cacf193dbfd9c356c1ce741dec0545bf9633b2d33d7f5c477","tag":""}
+`{"iv":"06dJOu6Nekdl/KasNwjoxA==","value":"BmpopFJRGAbcbiBB0sTlfa5lrOzDVCkmwLOlV7afSFEimJbgnTjS43HjwKpAADMun8rk5gwK5xiLfu8vBUXLB9vEmXY46pyhZt+anMj0Phr9ikkj/hyyPIecPreoJAtn","mac":"8d47f79f84a4168cacf193dbfd9c356c1ce741dec0545bf9633b2d33d7f5c477","tag":""}`
 
 a possibly exploitable code:
 
