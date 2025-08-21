@@ -1,7 +1,3 @@
-## INFO
-
-ip : 10.10.11.67
-
 ## ENUM:
 
 nmap result
