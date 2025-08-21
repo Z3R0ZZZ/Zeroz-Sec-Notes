@@ -35,7 +35,7 @@ I will now use the site normally with Burp to analyze the traffic.
 
 By using the service, I register a code and access it via the interface located at [http://10.10.11.62:5000/codes](http://10.10.11.62:5000/codes)
 
-![alt text](/note/ctf/asset/HTB_code0.png)
+![alt text](note/ctf/asset/HTB_code0.png)
 
 I notice the ID which may possibly be a lead to follow.
 
@@ -74,7 +74,7 @@ raise Exception(str((()) .__class__.__bases__[0].__subclasses__()[317](
     "whoami", shell=True, stdout=-1).communicate()))
 ```
 
-![alt text](/note/ctf/asset/HTB_code1.png)
+![alt text](note/ctf/asset/HTB_code1.png)
 
 Perfect, I generate a reverse shell payload!
 

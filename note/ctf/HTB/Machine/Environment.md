@@ -102,7 +102,7 @@ I try to look at a login page found with dirb
 
 error return displayed on the page ?:
 
-![alt text](/note/ctf/asset/HTB_environment00.png)
+![alt text](note/ctf/asset/HTB_environment00.png)
 
 clue from the challenge name + laravel + exploitable environment variable leads me here: CVE-2024-21534
 [https://vsec.com.br/exploiting-laravel-a-closer-look-at-cve-2024-21534/](https://vsec.com.br/exploiting-laravel-a-closer-look-at-cve-2024-21534/)
@@ -130,7 +130,7 @@ _token=1IhwKwvK9nfTjBaYQFD94CyJiTivdTCWEpt5GTXD&email=zeroz1337%40dot.com&passwo
 
 I deleted "remember" to test:
 
-![alt text](/note/ctf/asset/HTB_environment0.png)
+![alt text](note/ctf/asset/HTB_environment0.png)
 
 perfect I will play with the fields: put numbers on remember etc... to navigate in the code:
 
@@ -155,7 +155,7 @@ _token=1IhwKwvK9nfTjBaYQFD94CyJiTivdTCWEpt5GTXD&email=zeroz1337%40dot.com&passwo
 
 gives me an interesting result:
 
-![alt text](/note/ctf/asset/HTB_environment.png)
+![alt text](note/ctf/asset/HTB_environment.png)
 
 there is a preprod environment that I can exploit and I have exactly the method with the previous link by adding ?--env=preprod to get access to a default account!
 
@@ -182,7 +182,7 @@ I access the dashboard on hish’s account.
 
 once on the dashboard I try to change the profile picture and I see in the server response that it is saved in a specific path:
 
-![alt text](/note/ctf/asset/HTB_environment1.png)
+![alt text](note/ctf/asset/HTB_environment1.png)
 
 maybe an opportunity to try a webshell?
 
