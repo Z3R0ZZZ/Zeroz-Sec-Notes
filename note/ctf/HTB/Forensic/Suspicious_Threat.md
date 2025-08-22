@@ -16,7 +16,7 @@ And I find a very suspicious file:
 
 Upon analysis, this is indeed the rootkit, and it hides the folder pr3l04d_:
 
-![alt text](note/ctf/HTB/Forensic/HTB_sus_threat.png)
+![alt text](note/ctf/asset/HTB_sus_threat.png)
 
 I remove it by moving it into `/tmp`:
 
