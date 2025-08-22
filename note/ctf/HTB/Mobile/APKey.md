@@ -45,7 +45,7 @@ Ok so **MainActivity** is the entry point, and an `onClick` function caught my a
     }
 ```
 
-It’s enough to just patch:
+I only need to patch :
 
 ```java
 if (str.equals("a2a3d412e92d896134d9c9126d756f")) {
