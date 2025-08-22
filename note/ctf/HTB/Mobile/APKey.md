@@ -1,4 +1,4 @@
-![https://app.hackthebox.com/challenges/240](https://app.hackthebox.com/challenges/240)
+https://app.hackthebox.com/challenges/240
 
 ## Tool : Android Studio + JADX
 

@@ -1,4 +1,4 @@
-![https://app.hackthebox.com/machines/668](https://app.hackthebox.com/machines/668)
+https://app.hackthebox.com/machines/668
 
 ## Enumeration:
 

@@ -1,4 +1,4 @@
-![https://app.hackthebox.com/challenges/746](https://app.hackthebox.com/challenges/746)
+https://app.hackthebox.com/challenges/746
 
 This scenario strongly suggests the presence of a **userland rootkit** — malicious software that modifies or intercepts system calls at the user-space level to **hide files, processes, or connections**, usually by altering shared libraries (`libc`, `ld.so`, etc.) or via `LD_PRELOAD`.
 

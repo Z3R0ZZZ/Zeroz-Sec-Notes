@@ -1,4 +1,4 @@
-![https://app.hackthebox.com/challenges/536](https://app.hackthebox.com/challenges/536)
+https://app.hackthebox.com/challenges/536
 
 I immediately notice the README provided with the injected library. I decide to search for **“Diamorphine github”** and I find [Diamorphine](https://github.com/m0nad/Diamorphine).
 

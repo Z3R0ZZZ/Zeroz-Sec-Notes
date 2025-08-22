@@ -1,4 +1,4 @@
-![https://app.hackthebox.com/machines/653](https://app.hackthebox.com/machines/653)
+https://app.hackthebox.com/machines/653
 
 ## ENUM
 
