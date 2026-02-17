@@ -2,7 +2,7 @@ A **direct syscall** is an **evasion technique** that involves **bypassing tradi
 
 ➡️ We **no longer go through functions like `NtOpenProcess`, `NtWriteVirtualMemory`, etc.** via `ntdll.dll`
 
-➡️ We **perform the system call myself using the `syscall` instruction** (or `int 0x2e` in 32-bit mode)
+➡️ We **perform the system call ourselves using the `syscall` instruction** (or `int 0x2e` in 32-bit mode)
 
 ## **How does it work?**
 

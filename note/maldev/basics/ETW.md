@@ -12,7 +12,7 @@
 
   * detect abnormal behavior,
   
-  * collect detailed logs, even if I avoid using `ntdll.dll`.
+  * collect detailed logs, even if we avoid using `ntdll.dll`.
 
 ## **How does it work?**
 
