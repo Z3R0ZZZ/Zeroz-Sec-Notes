@@ -23,25 +23,31 @@ jobs:
             "https://api.www.root-me.org/auteurs/893032" \
             -o profile_rootme.json
 
-      - name: Fetch Root Me solved challenges with categories
-        run: |
-          curl -s \
-            -b "api_key=${{ secrets.ROOTME_API_KEY }}" \
-            "https://api.www.root-me.org/challenges?id_auteur[]=893032&limit=1000" \
-            -o profile_rootme_solved.json
-
-      - name: Fetch Root Me total challenges per category
+      - name: Fetch Root Me challenge totals per category
         env:
           ROOTME_API_KEY: ${{ secrets.ROOTME_API_KEY }}
         run: |
           python3 - << 'PYEOF'
           import urllib.request, json, os, time
 
-          RUBRIQUES = ["16","17","18","67","68","69","70","182","189","203","208"]
+          RUBRIQUES = {
+            "16": "Web - Client",
+            "17": "Programming",
+            "18": "Cryptanalysis",
+            "67": "Steganography",
+            "68": "Web - Server",
+            "69": "Cracking",
+            "70": "Realistic",
+            "182": "Network",
+            "189": "App - Script",
+            "203": "App - System",
+            "208": "Forensic",
+          }
+
           api_key = os.environ["ROOTME_API_KEY"]
           totals = {}
 
-          for rid in RUBRIQUES:
+          for rid, name in RUBRIQUES.items():
             count = 0
             debut = 0
             while True:
@@ -49,30 +55,32 @@ jobs:
               req = urllib.request.Request(url, headers={"Cookie": f"api_key={api_key}"})
               try:
                 with urllib.request.urlopen(req, timeout=15) as r:
-                  data = json.loads(r.read())
-                  if not isinstance(data, list) or len(data) == 0:
+                  raw = json.loads(r.read())
+                  # L'API retourne [ { "0": {...}, "1": {...}, ... } ]
+                  # donc raw est une liste avec un dict dont les clés sont des indices
+                  if not raw or not isinstance(raw, list):
                     break
-                  # Chaque élément est un dict avec une clé numérique
-                  items = []
-                  for v in data:
-                    if isinstance(v, dict):
-                      items.extend(v.values())
-                  count += len(items)
-                  if len(items) < 50:
+                  page_obj = raw[0]
+                  if not isinstance(page_obj, dict):
+                    break
+                  page_count = len(page_obj)
+                  count += page_count
+                  print(f"{name} offset {debut}: +{page_count} = {count}")
+                  if page_count < 50:
                     break
                   debut += 50
-                  time.sleep(0.3)
+                  time.sleep(0.5)
               except Exception as e:
-                print(f"Error rubrique {rid}: {e}")
+                print(f"Error {name} offset {debut}: {e}")
                 break
-            totals[rid] = count
-            print(f"rubrique {rid}: {count}")
+            totals[rid] = {"name": name, "total": count}
 
           with open("profile_rootme_totals.json", "w") as f:
             json.dump(totals, f)
+          print("Done:", totals)
           PYEOF
 
-      - name: Fetch HackTheBox basic
+      - name: Fetch HackTheBox basic profile
         run: |
           curl -s \
             -H "Authorization: Bearer ${{ secrets.HTB_API_KEY }}" \
@@ -80,7 +88,7 @@ jobs:
             "https://labs.hackthebox.com/api/v4/user/profile/basic/2084386" \
             -o profile_htb_basic.json
 
-      - name: Fetch HackTheBox activity
+      - name: Fetch HackTheBox activity (v5)
         run: |
           curl -s \
             -H "Authorization: Bearer ${{ secrets.HTB_API_KEY }}" \
@@ -92,6 +100,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add profile_rootme.json profile_rootme_solved.json profile_rootme_totals.json profile_htb_basic.json profile_htb_activity.json
+          git add profile_rootme.json profile_rootme_totals.json profile_htb_basic.json profile_htb_activity.json
           git diff --cached --quiet || git commit -m "chore: update profiles [skip ci]"
           git push
