@@ -1,11 +1,24 @@
-.rm-card {
-    background-color: #151822;
-    border: 1px solid #2a2d3a;
+/* rootme.css — widget profil Root Me, fond transparent */
+
+#rootme-widget {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .rm-card,
+  .rm-categories-box {
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 20px 24px;
+    width: 100%;
     max-width: 480px;
-    margin: 0 auto;
     text-align: left;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
   
   .rm-header {
@@ -19,7 +32,7 @@
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background-color: #1e1e38;
+    background-color: rgba(83, 74, 183, 0.2);
     border: 1px solid #534AB7;
     display: flex;
     align-items: center;
@@ -48,7 +61,7 @@
     font-size: 0.8em;
     color: #a7a7a7;
     text-decoration: none;
-    border: 1px solid #3a3a4a;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     padding: 5px 10px;
     border-radius: 6px;
     white-space: nowrap;
@@ -64,11 +77,11 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    margin-bottom: 18px;
   }
   
   .rm-stat {
-    background-color: #0f1117;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 8px;
     padding: 10px 8px;
     text-align: center;
@@ -90,13 +103,20 @@
     color: #e0e0e0;
   }
   
-  .rm-categories {
-    border-top: 1px solid #2a2d3a;
-    padding-top: 14px;
+  .rm-categories-box p.rm-cat-title {
+    margin: 0 0 14px;
+    font-size: 0.78em;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #7a7a7a;
   }
   
   .rm-cat {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+  }
+  
+  .rm-cat:last-child {
+    margin-bottom: 0;
   }
   
   .rm-cat-header {
@@ -104,11 +124,11 @@
     justify-content: space-between;
     font-size: 0.78em;
     color: #a7a7a7;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
   }
   
   .rm-bar-bg {
-    background-color: #1e1e2f;
+    background-color: rgba(255, 255, 255, 0.07);
     border-radius: 4px;
     height: 5px;
     overflow: hidden;
@@ -118,5 +138,5 @@
     height: 100%;
     background-color: #534AB7;
     border-radius: 4px;
-    transition: width 0.4s ease;
+    transition: width 0.5s ease;
   }

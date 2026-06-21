@@ -1,3 +1,4 @@
+/* rootme.js — charge profile.json généré par GitHub Actions */
 async function loadRootMeProfile() {
     const container = document.getElementById('rootme-widget');
     if (!container) return;
@@ -40,7 +41,6 @@ async function loadRootMeProfile() {
               Voir le profil ↗
             </a>
           </div>
-  
           <div class="rm-stats">
             <div class="rm-stat">
               <span class="rm-stat-label">Score</span>
@@ -55,9 +55,14 @@ async function loadRootMeProfile() {
               <span class="rm-stat-value">${challenges}</span>
             </div>
           </div>
+        </div>
   
-          ${bars ? `<div class="rm-categories">${bars}</div>` : ''}
-        </div>`;
+        ${bars ? `
+        <div class="rm-categories-box">
+          <p class="rm-cat-title">Progression par catégorie</p>
+          ${bars}
+        </div>` : ''}`;
+  
     } catch (e) {
       container.innerHTML = `<p style="color:#888;font-size:.9em;">Profil Root Me indisponible.</p>`;
     }
