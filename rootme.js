@@ -1,6 +1,6 @@
 /* profiles.js — Root Me + HackTheBox */
 
-const RUBRIQUES = {
+const RUBRIQUE_NAMES = {
     "16": "Web - Client", "17": "Programming", "18": "Cryptanalysis",
     "67": "Steganography", "68": "Web - Server", "69": "Cracking",
     "70": "Realistic", "182": "Network", "189": "App - Script",
@@ -16,41 +16,56 @@ const RUBRIQUES = {
     if (!container) return;
   
     try {
-      const [rmResp, htbBasicResp, htbActResp] = await Promise.all([
+      const [rmResp, rmSolvedResp, rmTotalsResp, htbBasicResp, htbActResp] = await Promise.all([
         fetch('profile_rootme.json'),
+        fetch('profile_rootme_solved.json'),
+        fetch('profile_rootme_totals.json'),
         fetch('profile_htb_basic.json'),
         fetch('profile_htb_activity.json'),
       ]);
   
-      const rm       = rmResp.ok       ? await rmResp.json()       : null;
-      const htbBasic = htbBasicResp.ok ? await htbBasicResp.json() : null;
-      const htbAct   = htbActResp.ok   ? await htbActResp.json()   : null;
+      const rm        = rmResp.ok        ? await rmResp.json()        : null;
+      const rmSolved  = rmSolvedResp.ok  ? await rmSolvedResp.json()  : null;
+      const rmTotals  = rmTotalsResp.ok  ? await rmTotalsResp.json()  : null;
+      const htbBasic  = htbBasicResp.ok  ? await htbBasicResp.json()  : null;
+      const htbAct    = htbActResp.ok    ? await htbActResp.json()    : null;
   
-      // Root Me — compte les validations par rubrique
-      if (rm) {
-        const validations = Array.isArray(rm.validations) ? rm.validations : [];
-        const counts = {};
-        for (const v of validations) {
-          const name = RUBRIQUES[v.id_rubrique];
-          if (name) counts[name] = (counts[name] || 0) + 1;
+      // Root Me — vrais pourcentages solved/total par catégorie
+      if (rm && rmSolved && rmTotals) {
+        // Compte les solved par rubrique depuis profile_rootme_solved.json
+        const solved = {};
+        const entries = Array.isArray(rmSolved) ? rmSolved : [];
+        for (const entry of entries) {
+          for (const v of Object.values(entry)) {
+            if (v?.id_rubrique) {
+              solved[v.id_rubrique] = (solved[v.id_rubrique] || 0) + 1;
+            }
+          }
         }
-        const total = validations.length;
-        const categories = Object.entries(counts)
-          .map(([name, count]) => ({ name, count, pct: Math.round((count / total) * 100) }))
-          .sort((a, b) => b.count - a.count);
+  
+        const categories = Object.entries(RUBRIQUE_NAMES).map(([rid, name]) => {
+          const s = solved[rid] || 0;
+          const t = rmTotals[rid] || 0;
+          const pct = t > 0 ? Math.min(100, Math.round((s / t) * 100)) : 0;
+          return { name, solved: s, total: t, pct };
+        })
+        .filter(c => c.solved > 0)
+        .sort((a, b) => b.pct - a.pct);
+  
+        const totalSolved = Object.values(solved).reduce((a, b) => a + b, 0);
   
         profilesData.rootme = {
           name: rm.nom ?? 'ZeroZ',
           score: rm.score ?? '—',
           rank: rm.position ? `#${rm.position}` : '—',
           label: rm.rang ?? '',
-          challenges: total,
+          challenges: totalSolved,
           categories,
           profileUrl: 'https://www.root-me.org/ZeroZ?lang=fr',
           color: '#534AB7',
           platform: 'Root Me',
-          catTitle: 'Solved by category',
-          labelFn: c => `${c.count} solved`,
+          catTitle: 'Completion by category',
+          labelFn: c => `${c.solved}/${c.total} (${c.pct}%)`,
         };
       }
   
@@ -69,8 +84,12 @@ const RUBRIQUES = {
           counts[label] = (counts[label] || 0) + 1;
         }
         const total = activity.length || 1;
+        const maxCount = Math.max(...Object.values(counts), 1);
         const categories = Object.entries(counts)
-          .map(([name, count]) => ({ name, count, pct: Math.round((count / total) * 100) }))
+          .map(([name, count]) => ({
+            name, count,
+            pct: Math.round((count / maxCount) * 100),
+          }))
           .sort((a, b) => b.count - a.count);
   
         profilesData.htb = {
@@ -83,8 +102,8 @@ const RUBRIQUES = {
           profileUrl: 'https://app.hackthebox.com/users/2084386',
           color: '#9fef00',
           platform: 'HackTheBox',
-          catTitle: 'Activity breakdown',
-          labelFn: c => `${c.count} (${c.pct}%)`,
+          catTitle: `Last ${total} activities (not completion)`,
+          labelFn: c => `${c.count} / ${total}`,
         };
       }
   
@@ -102,8 +121,9 @@ const RUBRIQUES = {
     if (!d) { current = (current + 1) % PLATFORMS.length; renderProfile(); return; }
   
     const initials = d.name.slice(0, 2).toUpperCase();
+    const slice = d.categories.slice(0, 9);
   
-    const bars = d.categories.slice(0, 9).map(c => `
+    const bars = slice.map(c => `
       <div class="rm-cat">
         <div class="rm-cat-header">
           <span>${c.name}</span>
