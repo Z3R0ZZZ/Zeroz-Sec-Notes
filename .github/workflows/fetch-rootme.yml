@@ -24,9 +24,11 @@ jobs:
             -o profile_rootme.json
 
       - name: Fetch Root Me challenge totals per category
+        env:
+          ROOTME_API_KEY: ${{ secrets.ROOTME_API_KEY }}
         run: |
-          python3 << 'PYEOF'
-          import urllib.request, json
+          python3 - << 'PYEOF'
+          import urllib.request, json, os
 
           RUBRIQUES = {
             "16": "Web - Client",
@@ -42,34 +44,40 @@ jobs:
             "208": "Forensic",
           }
 
+          api_key = os.environ["ROOTME_API_KEY"]
           totals = {}
+
           for rid, name in RUBRIQUES.items():
-            url = f"https://api.www.root-me.org/challenges?id_rubrique={rid}&limit=500"
-            req = urllib.request.Request(url, headers={"Cookie": "api_key=${{ secrets.ROOTME_API_KEY }}"})
+            url = f"https://api.www.root-me.org/challenges?id_rubrique={rid}&limit=1000"
+            req = urllib.request.Request(url, headers={"Cookie": f"api_key={api_key}"})
             try:
-              with urllib.request.urlopen(req, timeout=10) as r:
+              with urllib.request.urlopen(req, timeout=15) as r:
                 data = json.loads(r.read())
-                count = len(data) if isinstance(data, list) else len(data.get("challenges", []))
+                count = len(data) if isinstance(data, list) else 0
                 totals[rid] = {"name": name, "total": count}
+                print(f"{name}: {count}")
             except Exception as e:
+              print(f"Erreur {name}: {e}")
               totals[rid] = {"name": name, "total": 0}
 
           with open("profile_rootme_totals.json", "w") as f:
             json.dump(totals, f)
-          print("Totals:", totals)
           PYEOF
 
-      - name: Fetch HackTheBox
+      - name: Fetch HackTheBox basic profile
         run: |
           curl -s \
             -H "Authorization: Bearer ${{ secrets.HTB_API_KEY }}" \
             -H "Accept: application/json" \
             "https://labs.hackthebox.com/api/v4/user/profile/basic/2084386" \
             -o profile_htb_basic.json
+
+      - name: Fetch HackTheBox activity (v5)
+        run: |
           curl -s \
             -H "Authorization: Bearer ${{ secrets.HTB_API_KEY }}" \
             -H "Accept: application/json" \
-            "https://labs.hackthebox.com/api/v4/user/profile/activity/2084386" \
+            "https://labs.hackthebox.com/api/v5/user/profile/activity/2084386" \
             -o profile_htb_activity.json
 
       - name: Commit & push
