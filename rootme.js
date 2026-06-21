@@ -1,5 +1,18 @@
-/* rootme.js — charge profile.json généré par GitHub Actions */
-async function loadRootMeProfile() {
+const RUBRIQUES = {
+    "16":  "Web - Client",
+    "17":  "Programmation",
+    "18":  "Cryptanalyse",
+    "67":  "Stéganographie",
+    "68":  "Web - Serveur",
+    "69":  "Cracking",
+    "70":  "Réaliste",
+    "182": "Réseau",
+    "189": "App - Script",
+    "203": "App - Système",
+    "208": "Forensic",
+  };
+  
+  async function loadRootMeProfile() {
     const container = document.getElementById('rootme-widget');
     if (!container) return;
   
@@ -8,20 +21,26 @@ async function loadRootMeProfile() {
       if (!resp.ok) throw new Error('profile.json introuvable');
       const data = await resp.json();
   
-      const score      = data.score ?? '—';
-      const position   = data.position ? `#${data.position}` : '—';
-      const challenges = Array.isArray(data.challenges)
-        ? data.challenges.length
-        : Object.keys(data.challenges ?? {}).length;
-      const categories = (data.score?.category ?? []).slice(0, 6);
+      const score    = data.score ?? '—';
+      const position = data.position ? `#${data.position}` : '—';
+      const validations = Array.isArray(data.validations) ? data.validations : [];
+      const total = validations.length;
   
-      const bars = categories.map(cat => {
-        const pct = parseInt(cat.progression) || 0;
+      const counts = {};
+      for (const v of validations) {
+        const name = RUBRIQUES[v.id_rubrique] || `Catégorie ${v.id_rubrique}`;
+        counts[name] = (counts[name] || 0) + 1;
+      }
+  
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  
+      const bars = sorted.map(([name, count]) => {
+        const pct = Math.round((count / total) * 100);
         return `
           <div class="rm-cat">
             <div class="rm-cat-header">
-              <span>${cat.name}</span>
-              <span>${cat.progression}</span>
+              <span>${name}</span>
+              <span>${count} challenge${count > 1 ? 's' : ''} (${pct}%)</span>
             </div>
             <div class="rm-bar-bg">
               <div class="rm-bar-fill" style="width:${pct}%"></div>
@@ -52,7 +71,7 @@ async function loadRootMeProfile() {
             </div>
             <div class="rm-stat">
               <span class="rm-stat-label">Challenges</span>
-              <span class="rm-stat-value">${challenges}</span>
+              <span class="rm-stat-value">${total}</span>
             </div>
           </div>
         </div>
