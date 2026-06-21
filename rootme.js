@@ -1,10 +1,10 @@
 /* profiles.js — Root Me + HackTheBox */
 
 const RUBRIQUES = {
-    "16": "Web - Client", "17": "Programmation", "18": "Cryptanalyse",
-    "67": "Stéganographie", "68": "Web - Serveur", "69": "Cracking",
-    "70": "Réaliste", "182": "Réseau", "189": "App - Script",
-    "203": "App - Système", "208": "Forensic",
+    "16": "Web - Client", "17": "Programming", "18": "Cryptanalysis",
+    "67": "Steganography", "68": "Web - Server", "69": "Cracking",
+    "70": "Realistic", "182": "Network", "189": "App - Script",
+    "203": "App - System", "208": "Forensic",
   };
   
   const PLATFORMS = ['rootme', 'htb'];
@@ -28,7 +28,7 @@ const RUBRIQUES = {
       const htbBasic = htbBasicResp.ok ? await htbBasicResp.json() : null;
       const htbAct   = htbActResp.ok   ? await htbActResp.json()   : null;
   
-      // Root Me — vrai taux de complétion par catégorie
+      // Root Me
       if (rm) {
         const validations = Array.isArray(rm.validations) ? rm.validations : [];
         const solved = {};
@@ -36,11 +36,10 @@ const RUBRIQUES = {
           solved[v.id_rubrique] = (solved[v.id_rubrique] || 0) + 1;
         }
   
-        // Construit les catégories avec le vrai pourcentage
         const categories = Object.entries(RUBRIQUES).map(([rid, name]) => {
           const s = solved[rid] || 0;
           const t = totals?.[rid]?.total || 0;
-          const pct = t > 0 ? Math.round((s / t) * 100) : 0;
+          const pct = t > 0 ? Math.min(100, Math.round((s / t) * 100)) : 0;
           return { name, solved: s, total: t, pct };
         })
         .filter(c => c.solved > 0)
@@ -56,26 +55,38 @@ const RUBRIQUES = {
           profileUrl: 'https://www.root-me.org/ZeroZ?lang=fr',
           color: '#534AB7',
           platform: 'Root Me',
+          catTitle: 'Completion by category',
         };
       }
   
-      // HTB
+      // HTB — structure: { data: [ { type, name, categoryName, points, ownDate } ] }
       if (htbBasic?.profile) {
         const p = htbBasic.profile;
-        const activity = htbAct?.profile?.activity ?? [];
-        const htbCats = {};
+        const activity = htbAct?.data ?? [];
+  
+        const catCounts = {};
         for (const a of activity) {
-          if (a.object_type) {
-            htbCats[a.object_type] = (htbCats[a.object_type] || 0) + 1;
-          }
+          let label;
+          if (a.type === 'challenge') label = a.categoryName ?? 'Challenge';
+          else if (a.type === 'root') label = 'Machine (Root)';
+          else if (a.type === 'user') label = 'Machine (User)';
+          else if (a.type === 'sherlock') label = 'Sherlock';
+          else label = a.type ?? 'Other';
+          catCounts[label] = (catCounts[label] || 0) + 1;
         }
+  
         const total = activity.length || 1;
-        const categories = Object.entries(htbCats)
-          .map(([name, count]) => ({ name, solved: count, total, pct: Math.round((count / total) * 100) }))
-          .sort((a, b) => b.pct - a.pct);
+        const categories = Object.entries(catCounts)
+          .map(([name, count]) => ({
+            name,
+            solved: count,
+            total,
+            pct: Math.round((count / total) * 100)
+          }))
+          .sort((a, b) => b.solved - a.solved);
   
         profilesData.htb = {
-          name: p.name ?? 'ZeroZ',
+          name: p.name ?? 'Z3R05',
           score: p.points ?? '—',
           rank: p.ranking ? `#${p.ranking}` : '—',
           label: p.rank ?? '',
@@ -84,13 +95,14 @@ const RUBRIQUES = {
           profileUrl: 'https://app.hackthebox.com/users/2084386',
           color: '#9fef00',
           platform: 'HackTheBox',
+          catTitle: 'Activity breakdown',
         };
       }
   
       renderProfile();
     } catch (e) {
       document.getElementById('rootme-widget').innerHTML =
-        `<p style="color:#888;font-size:.9em;">Profils indisponibles.</p>`;
+        `<p style="color:#888;font-size:.9em;">Profiles unavailable.</p>`;
     }
   }
   
@@ -131,7 +143,7 @@ const RUBRIQUES = {
               <p class="rm-name">${d.name}</p>
               <p class="rm-sub">${d.platform}${d.label ? ' · ' + d.label : ''}</p>
             </div>
-            <a class="rm-link" href="${d.profileUrl}" target="_blank">Voir ↗</a>
+            <a class="rm-link" href="${d.profileUrl}" target="_blank">View ↗</a>
           </div>
   
           <div class="rm-stats">
@@ -140,7 +152,7 @@ const RUBRIQUES = {
               <span class="rm-stat-value">${d.score}</span>
             </div>
             <div class="rm-stat">
-              <span class="rm-stat-label">Classement</span>
+              <span class="rm-stat-label">Ranking</span>
               <span class="rm-stat-value">${d.rank}</span>
             </div>
             <div class="rm-stat">
@@ -150,15 +162,15 @@ const RUBRIQUES = {
           </div>
   
           <div class="rm-nav">
-            <button class="rm-btn" onclick="prevProfile()">← Préc.</button>
+            <button class="rm-btn" onclick="prevProfile()">← Prev</button>
             <div class="rm-dots">${dots}</div>
-            <button class="rm-btn" onclick="nextProfile()">Suiv. →</button>
+            <button class="rm-btn" onclick="nextProfile()">Next →</button>
           </div>
         </div>
   
         <div class="rm-categories-box">
-          <p class="rm-cat-title">${key === 'rootme' ? 'Complétion par catégorie' : 'Répartition activité'}</p>
-          ${bars || '<p style="color:#666;font-size:.85em;">Aucune donnée</p>'}
+          <p class="rm-cat-title">${d.catTitle}</p>
+          ${bars || '<p style="color:#666;font-size:.85em;">No data available</p>'}
         </div>
       </div>`;
   }

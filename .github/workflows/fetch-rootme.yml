@@ -28,19 +28,19 @@ jobs:
           ROOTME_API_KEY: ${{ secrets.ROOTME_API_KEY }}
         run: |
           python3 - << 'PYEOF'
-          import urllib.request, json, os
+          import urllib.request, json, os, time
 
           RUBRIQUES = {
             "16": "Web - Client",
-            "17": "Programmation",
-            "18": "Cryptanalyse",
-            "67": "Stéganographie",
-            "68": "Web - Serveur",
+            "17": "Programming",
+            "18": "Cryptanalysis",
+            "67": "Steganography",
+            "68": "Web - Server",
             "69": "Cracking",
-            "70": "Réaliste",
-            "182": "Réseau",
+            "70": "Realistic",
+            "182": "Network",
             "189": "App - Script",
-            "203": "App - Système",
+            "203": "App - System",
             "208": "Forensic",
           }
 
@@ -48,17 +48,26 @@ jobs:
           totals = {}
 
           for rid, name in RUBRIQUES.items():
-            url = f"https://api.www.root-me.org/challenges?id_rubrique={rid}&limit=1000"
-            req = urllib.request.Request(url, headers={"Cookie": f"api_key={api_key}"})
-            try:
-              with urllib.request.urlopen(req, timeout=15) as r:
-                data = json.loads(r.read())
-                count = len(data) if isinstance(data, list) else 0
-                totals[rid] = {"name": name, "total": count}
-                print(f"{name}: {count}")
-            except Exception as e:
-              print(f"Erreur {name}: {e}")
-              totals[rid] = {"name": name, "total": 0}
+            count = 0
+            debut = 0
+            while True:
+              url = f"https://api.www.root-me.org/challenges?id_rubrique={rid}&debut_challenges={debut}&limit=50"
+              req = urllib.request.Request(url, headers={"Cookie": f"api_key={api_key}"})
+              try:
+                with urllib.request.urlopen(req, timeout=15) as r:
+                  data = json.loads(r.read())
+                  if not isinstance(data, list) or len(data) == 0:
+                    break
+                  count += len(data)
+                  if len(data) < 50:
+                    break
+                  debut += 50
+                  time.sleep(0.3)
+              except Exception as e:
+                print(f"Error {name} offset {debut}: {e}")
+                break
+            totals[rid] = {"name": name, "total": count}
+            print(f"{name}: {count}")
 
           with open("profile_rootme_totals.json", "w") as f:
             json.dump(totals, f)
