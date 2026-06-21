@@ -1,19 +1,32 @@
+/* profiles.css — Root Me + HTB, layout côte à côte */
+
 #rootme-widget {
     margin-top: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    width: 100%;
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .rm-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 16px;
+    align-items: start;
+  }
+  
+  @media (max-width: 640px) {
+    .rm-layout {
+      grid-template-columns: 1fr;
+    }
   }
   
   .rm-card,
   .rm-categories-box {
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    padding: 20px 24px;
-    width: 100%;
-    max-width: 480px;
+    padding: 20px 22px;
     text-align: left;
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -30,15 +43,15 @@
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background-color: rgba(83, 74, 183, 0.2);
+    background-color: rgba(255,255,255,0.05);
     border: 1px solid #534AB7;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     font-size: 14px;
-    color: #a7a0f0;
     flex-shrink: 0;
+    transition: border-color 0.3s, color 0.3s;
   }
   
   .rm-name {
@@ -50,17 +63,17 @@
   
   .rm-sub {
     margin: 2px 0 0;
-    font-size: 0.8em;
+    font-size: 0.78em;
     color: #7a7a7a;
   }
   
   .rm-link {
     margin-left: auto;
-    font-size: 0.8em;
+    font-size: 0.78em;
     color: #a7a7a7;
     text-decoration: none;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 5px 10px;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 4px 10px;
     border-radius: 6px;
     white-space: nowrap;
     transition: 0.2s;
@@ -74,36 +87,83 @@
   .rm-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: 8px;
+    margin-bottom: 16px;
   }
   
   .rm-stat {
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background-color: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
     border-radius: 8px;
-    padding: 10px 8px;
+    padding: 10px 6px;
     text-align: center;
   }
   
   .rm-stat-label {
     display: block;
-    font-size: 0.72em;
+    font-size: 0.68em;
     color: #7a7a7a;
     margin-bottom: 4px;
     text-transform: uppercase;
-    letter-spacing: .04em;
+    letter-spacing: .05em;
   }
   
   .rm-stat-value {
     display: block;
-    font-size: 1.3em;
+    font-size: 1.2em;
     font-weight: bold;
     color: #e0e0e0;
   }
   
-  .rm-categories-box p.rm-cat-title {
-    margin: 0 0 14px;
+  .rm-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    gap: 8px;
+  }
+  
+  .rm-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #a7a7a7;
     font-size: 0.78em;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
+  .rm-btn:hover {
+    background: rgba(255,255,255,0.12);
+    color: #e0e0e0;
+  }
+  
+  .rm-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  
+  .rm-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transition: background 0.3s;
+  }
+  
+  .rm-dot-active {
+    background: #534AB7;
+  }
+  
+  .rm-categories-box {
+    height: 100%;
+  }
+  
+  .rm-cat-title {
+    margin: 0 0 14px;
+    font-size: 0.72em;
     text-transform: uppercase;
     letter-spacing: .06em;
     color: #7a7a7a;
@@ -126,7 +186,7 @@
   }
   
   .rm-bar-bg {
-    background-color: rgba(255, 255, 255, 0.07);
+    background-color: rgba(255,255,255,0.07);
     border-radius: 4px;
     height: 5px;
     overflow: hidden;
@@ -134,7 +194,6 @@
   
   .rm-bar-fill {
     height: 100%;
-    background-color: #534AB7;
     border-radius: 4px;
-    transition: width 0.5s ease;
+    transition: width 0.5s ease, background 0.3s ease;
   }
