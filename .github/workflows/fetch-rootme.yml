@@ -23,55 +23,12 @@ jobs:
             "https://api.www.root-me.org/auteurs/893032" \
             -o profile_rootme.json
 
-      - name: Fetch Root Me challenge totals per category
-        env:
-          ROOTME_API_KEY: ${{ secrets.ROOTME_API_KEY }}
+      - name: Fetch Root Me score by category
         run: |
-          python3 - << 'PYEOF'
-          import urllib.request, json, os, time
-
-          RUBRIQUES = {
-            "16": "Web - Client",
-            "17": "Programming",
-            "18": "Cryptanalysis",
-            "67": "Steganography",
-            "68": "Web - Server",
-            "69": "Cracking",
-            "70": "Realistic",
-            "182": "Network",
-            "189": "App - Script",
-            "203": "App - System",
-            "208": "Forensic",
-          }
-
-          api_key = os.environ["ROOTME_API_KEY"]
-          totals = {}
-
-          for rid, name in RUBRIQUES.items():
-            count = 0
-            debut = 0
-            while True:
-              url = f"https://api.www.root-me.org/challenges?id_rubrique={rid}&debut_challenges={debut}&limit=50"
-              req = urllib.request.Request(url, headers={"Cookie": f"api_key={api_key}"})
-              try:
-                with urllib.request.urlopen(req, timeout=15) as r:
-                  data = json.loads(r.read())
-                  if not isinstance(data, list) or len(data) == 0:
-                    break
-                  count += len(data)
-                  if len(data) < 50:
-                    break
-                  debut += 50
-                  time.sleep(0.3)
-              except Exception as e:
-                print(f"Error {name} offset {debut}: {e}")
-                break
-            totals[rid] = {"name": name, "total": count}
-            print(f"{name}: {count}")
-
-          with open("profile_rootme_totals.json", "w") as f:
-            json.dump(totals, f)
-          PYEOF
+          curl -s \
+            -b "api_key=${{ secrets.ROOTME_API_KEY }}" \
+            "https://api.www.root-me.org/auteurs?nom=ZeroZ&lang=fr" \
+            -o profile_rootme_score.json
 
       - name: Fetch HackTheBox basic profile
         run: |
@@ -81,7 +38,7 @@ jobs:
             "https://labs.hackthebox.com/api/v4/user/profile/basic/2084386" \
             -o profile_htb_basic.json
 
-      - name: Fetch HackTheBox activity (v5)
+      - name: Fetch HackTheBox activity
         run: |
           curl -s \
             -H "Authorization: Bearer ${{ secrets.HTB_API_KEY }}" \
@@ -93,6 +50,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add profile_rootme.json profile_rootme_totals.json profile_htb_basic.json profile_htb_activity.json
+          git add profile_rootme.json profile_rootme_score.json profile_htb_basic.json profile_htb_activity.json
           git diff --cached --quiet || git commit -m "chore: update profiles [skip ci]"
           git push
