@@ -1,5 +1,3 @@
-/* profiles.js — Root Me + HackTheBox */
-
 const RUBRIQUES = {
   "16": "Web - Client", "17": "Programming", "18": "Cryptanalysis",
   "67": "Steganography", "68": "Web - Server", "69": "Cracking",
@@ -31,16 +29,12 @@ async function loadProfiles() {
     // Root Me
     if (rm) {
       const validations = Array.isArray(rm.validations) ? rm.validations : [];
-
-      // Compte les challenges résolus par rubrique
       const solved = {};
       for (const v of validations) {
         solved[v.id_rubrique] = (solved[v.id_rubrique] || 0) + 1;
       }
-
       const categories = Object.entries(RUBRIQUES).map(([rid, name]) => {
         const s = solved[rid] || 0;
-        // rmTotals[rid] = { name: "...", total: 48 }
         const t = rmTotals?.[rid]?.total ?? 0;
         const pct = t > 0 ? Math.min(100, Math.round((s / t) * 100)) : 0;
         return { name, solved: s, total: t, pct };
@@ -50,8 +44,6 @@ async function loadProfiles() {
 
       profilesData.rootme = {
         name: rm.nom ?? 'ZeroZ',
-        score: rm.score ?? '—',
-        rank: rm.position ? `#${rm.position}` : '—',
         label: rm.rang ?? '',
         challenges: validations.length,
         categories,
@@ -60,6 +52,11 @@ async function loadProfiles() {
         platform: 'Root Me',
         catTitle: 'Completion by category',
         labelFn: c => `${c.solved}/${c.total} (${c.pct}%)`,
+        stats: [
+          { label: 'Score',     value: rm.score ?? '—' },
+          { label: 'Ranking',   value: rm.position ? `#${rm.position}` : '—' },
+          { label: 'Challenges',value: validations.length },
+        ],
       };
     }
 
@@ -67,6 +64,7 @@ async function loadProfiles() {
     if (htbBasic?.profile) {
       const p = htbBasic.profile;
       const activity = htbAct?.data ?? [];
+      const totalItems = htbAct?.meta?.totalItems ?? activity.length;
 
       const counts = {};
       for (const a of activity) {
@@ -78,28 +76,26 @@ async function loadProfiles() {
         else                            label = a.type ?? 'Other';
         counts[label] = (counts[label] || 0) + 1;
       }
-
-      const total = activity.length || 1;
       const maxCount = Math.max(...Object.values(counts), 1);
       const categories = Object.entries(counts)
-        .map(([name, count]) => ({
-          name, count,
-          pct: Math.round((count / maxCount) * 100),
-        }))
+        .map(([name, count]) => ({ name, count, pct: Math.round((count / maxCount) * 100) }))
         .sort((a, b) => b.count - a.count);
 
       profilesData.htb = {
         name: p.name ?? 'Z3R05',
-        score: p.points ?? '—',
-        rank: p.ranking ? `#${p.ranking}` : '—',
         label: p.rank ?? '',
         challenges: (p.user_owns ?? 0) + (p.system_owns ?? 0),
         categories,
         profileUrl: 'https://app.hackthebox.com/users/2084386',
         color: '#9fef00',
         platform: 'HackTheBox',
-        catTitle: `Last ${total} activities`,
+        catTitle: `Last ${totalItems} activities`,
         labelFn: c => `${c.count}`,
+        stats: [
+          { label: 'User Owns',  value: p.user_owns ?? '—' },
+          { label: 'Sys Owns',   value: p.system_owns ?? '—' },
+          { label: 'Ranking',    value: p.ranking ? `#${p.ranking}` : '—' },
+        ],
       };
     }
 
@@ -129,6 +125,12 @@ function renderProfile() {
       </div>
     </div>`).join('');
 
+  const statsHTML = d.stats.map(s => `
+    <div class="rm-stat">
+      <span class="rm-stat-label">${s.label}</span>
+      <span class="rm-stat-value">${s.value}</span>
+    </div>`).join('');
+
   const dots = PLATFORMS.map((p, i) =>
     `<span class="rm-dot ${i === current ? 'rm-dot-active' : ''}" style="${i === current ? `background:${d.color};` : ''}"></span>`
   ).join('');
@@ -144,20 +146,7 @@ function renderProfile() {
           </div>
           <a class="rm-link" href="${d.profileUrl}" target="_blank">View ↗</a>
         </div>
-        <div class="rm-stats">
-          <div class="rm-stat">
-            <span class="rm-stat-label">Score</span>
-            <span class="rm-stat-value">${d.score}</span>
-          </div>
-          <div class="rm-stat">
-            <span class="rm-stat-label">Ranking</span>
-            <span class="rm-stat-value">${d.rank}</span>
-          </div>
-          <div class="rm-stat">
-            <span class="rm-stat-label">Challenges</span>
-            <span class="rm-stat-value">${d.challenges}</span>
-          </div>
-        </div>
+        <div class="rm-stats">${statsHTML}</div>
         <div class="rm-nav">
           <button class="rm-btn" onclick="prevProfile()">← Prev</button>
           <div class="rm-dots">${dots}</div>
