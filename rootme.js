@@ -1,3 +1,5 @@
+/* profiles.js — Root Me + HackTheBox */
+
 const RUBRIQUES = {
   "16": "Web - Client", "17": "Programming", "18": "Cryptanalysis",
   "67": "Steganography", "68": "Web - Server", "69": "Cracking",
@@ -89,7 +91,7 @@ async function loadProfiles() {
         profileUrl: 'https://app.hackthebox.com/users/2084386',
         color: '#9fef00',
         platform: 'HackTheBox',
-        catTitle: `Last ${totalItems} activities`,
+        catTitle: `Last ${activity.length} activities`,
         labelFn: c => `${c.count}`,
         stats: [
           { label: 'User Owns',  value: p.user_owns ?? '—' },
