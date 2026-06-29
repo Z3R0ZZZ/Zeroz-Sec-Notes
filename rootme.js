@@ -116,7 +116,7 @@ function renderProfile() {
 
   const initials = d.name.slice(0, 2).toUpperCase();
 
-  const bars = d.categories.slice(0, 9).map(c => `
+  const bars = d.categories.slice(0, 11).map(c => `
     <div class="rm-cat">
       <div class="rm-cat-header">
         <span>${c.name}</span>
