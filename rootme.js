@@ -66,33 +66,41 @@ async function loadProfiles() {
     if (htbBasic?.profile) {
       const p = htbBasic.profile;
       const activity = htbAct?.data ?? [];
+      const FEED_SIZE = 8;
 
       // Ensure most-recent-first, regardless of API ordering
       const sortedActivity = [...activity].sort(
         (a, b) => new Date(b.ownDate) - new Date(a.ownDate)
       );
 
-      const lastChallenge = sortedActivity.find(a => a.type === 'challenge');
-      const lastMachine = sortedActivity.find(a => a.type === 'root' || a.type === 'user');
-
       const fmtDate = (iso) => iso
         ? new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
         : null;
+
+      const ICONS = { root: '🖥️', user: '🖥️', challenge: '🚩', sherlock: '🔍' };
+
+      const feed = sortedActivity.slice(0, FEED_SIZE).map(a => {
+        let sub;
+        if (a.type === 'root')      sub = 'Root';
+        else if (a.type === 'user') sub = 'User';
+        else if (a.type === 'challenge') sub = a.categoryName ?? 'Challenge';
+        else if (a.type === 'sherlock')  sub = 'Sherlock';
+        else sub = a.type ?? '';
+
+        return {
+          icon: ICONS[a.type] ?? '•',
+          name: a.name,
+          sub,
+          date: fmtDate(a.ownDate),
+        };
+      });
 
       profilesData.htb = {
         name: p.name ?? 'Z3R05',
         label: p.rank ?? '',
         challenges: (p.user_owns ?? 0) + (p.system_owns ?? 0),
-        lastMachine: lastMachine ? {
-          name: lastMachine.name,
-          type: lastMachine.type === 'root' ? 'Root' : 'User',
-          date: fmtDate(lastMachine.ownDate),
-        } : null,
-        lastChallenge: lastChallenge ? {
-          name: lastChallenge.name,
-          category: lastChallenge.categoryName ?? 'Challenge',
-          date: fmtDate(lastChallenge.ownDate),
-        } : null,
+        feed,
+        catTitle: `Last ${feed.length} activities`,
         profileUrl: 'https://app.hackthebox.com/users/2084386',
         color: '#9fef00',
         platform: 'HackTheBox',
@@ -173,32 +181,18 @@ function renderRootmePanel(d) {
 }
 
 function renderHtbPanel(d) {
-  const rows = [];
-
-  if (d.lastMachine) {
-    rows.push(`
-      <div class="rm-cat">
-        <div class="rm-cat-header">
-          <span>🖥️ ${d.lastMachine.name} <span style="color:${d.color};">· ${d.lastMachine.type}</span></span>
-          <span>${d.lastMachine.date ?? ''}</span>
-        </div>
-      </div>`);
-  }
-
-  if (d.lastChallenge) {
-    rows.push(`
-      <div class="rm-cat">
-        <div class="rm-cat-header">
-          <span>🚩 ${d.lastChallenge.name} <span style="color:${d.color};">· ${d.lastChallenge.category}</span></span>
-          <span>${d.lastChallenge.date ?? ''}</span>
-        </div>
-      </div>`);
-  }
+  const rows = (d.feed ?? []).map(a => `
+    <div class="rm-cat">
+      <div class="rm-cat-header">
+        <span>${a.icon} ${a.name} <span style="color:${d.color};">· ${a.sub}</span></span>
+        <span>${a.date ?? ''}</span>
+      </div>
+    </div>`).join('');
 
   return `
     <div class="rm-categories-box">
-      <p class="rm-cat-title">Last activity</p>
-      ${rows.join('') || '<p style="color:#666;font-size:.85em;">No data available</p>'}
+      <p class="rm-cat-title">${d.catTitle ?? 'Last activity'}</p>
+      ${rows || '<p style="color:#666;font-size:.85em;">No data available</p>'}
     </div>`;
 }
 
