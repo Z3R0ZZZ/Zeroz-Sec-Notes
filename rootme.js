@@ -66,33 +66,36 @@ async function loadProfiles() {
     if (htbBasic?.profile) {
       const p = htbBasic.profile;
       const activity = htbAct?.data ?? [];
-      const totalItems = htbAct?.meta?.totalItems ?? activity.length;
 
-      const counts = {};
-      for (const a of activity) {
-        let label;
-        if (a.type === 'challenge')     label = a.categoryName ?? 'Challenge';
-        else if (a.type === 'root')     label = 'Machine (Root)';
-        else if (a.type === 'user')     label = 'Machine (User)';
-        else if (a.type === 'sherlock') label = 'Sherlock';
-        else                            label = a.type ?? 'Other';
-        counts[label] = (counts[label] || 0) + 1;
-      }
-      const maxCount = Math.max(...Object.values(counts), 1);
-      const categories = Object.entries(counts)
-        .map(([name, count]) => ({ name, count, pct: Math.round((count / maxCount) * 100) }))
-        .sort((a, b) => b.count - a.count);
+      // Ensure most-recent-first, regardless of API ordering
+      const sortedActivity = [...activity].sort(
+        (a, b) => new Date(b.ownDate) - new Date(a.ownDate)
+      );
+
+      const lastChallenge = sortedActivity.find(a => a.type === 'challenge');
+      const lastMachine = sortedActivity.find(a => a.type === 'root' || a.type === 'user');
+
+      const fmtDate = (iso) => iso
+        ? new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
+        : null;
 
       profilesData.htb = {
         name: p.name ?? 'Z3R05',
         label: p.rank ?? '',
         challenges: (p.user_owns ?? 0) + (p.system_owns ?? 0),
-        categories,
+        lastMachine: lastMachine ? {
+          name: lastMachine.name,
+          type: lastMachine.type === 'root' ? 'Root' : 'User',
+          date: fmtDate(lastMachine.ownDate),
+        } : null,
+        lastChallenge: lastChallenge ? {
+          name: lastChallenge.name,
+          category: lastChallenge.categoryName ?? 'Challenge',
+          date: fmtDate(lastChallenge.ownDate),
+        } : null,
         profileUrl: 'https://app.hackthebox.com/users/2084386',
         color: '#9fef00',
         platform: 'HackTheBox',
-        catTitle: `Last ${activity.length} activities`,
-        labelFn: c => `${c.count}`,
         stats: [
           { label: 'User Owns',  value: p.user_owns ?? '—' },
           { label: 'Sys Owns',   value: p.system_owns ?? '—' },
@@ -116,17 +119,6 @@ function renderProfile() {
 
   const initials = d.name.slice(0, 2).toUpperCase();
 
-  const bars = d.categories.slice(0, 11).map(c => `
-    <div class="rm-cat">
-      <div class="rm-cat-header">
-        <span>${c.name}</span>
-        <span>${d.labelFn(c)}</span>
-      </div>
-      <div class="rm-bar-bg">
-        <div class="rm-bar-fill" style="width:${c.pct}%; background:${d.color};"></div>
-      </div>
-    </div>`).join('');
-
   const statsHTML = d.stats.map(s => `
     <div class="rm-stat">
       <span class="rm-stat-label">${s.label}</span>
@@ -136,6 +128,8 @@ function renderProfile() {
   const dots = PLATFORMS.map((p, i) =>
     `<span class="rm-dot ${i === current ? 'rm-dot-active' : ''}" style="${i === current ? `background:${d.color};` : ''}"></span>`
   ).join('');
+
+  const rightPanel = key === 'htb' ? renderHtbPanel(d) : renderRootmePanel(d);
 
   container.innerHTML = `
     <div class="rm-layout">
@@ -155,10 +149,56 @@ function renderProfile() {
           <button class="rm-btn" onclick="nextProfile()">Next →</button>
         </div>
       </div>
-      <div class="rm-categories-box">
-        <p class="rm-cat-title">${d.catTitle}</p>
-        ${bars || '<p style="color:#666;font-size:.85em;">No data available</p>'}
+      ${rightPanel}
+    </div>`;
+}
+
+function renderRootmePanel(d) {
+  const bars = d.categories.slice(0, 11).map(c => `
+    <div class="rm-cat">
+      <div class="rm-cat-header">
+        <span>${c.name}</span>
+        <span>${d.labelFn(c)}</span>
       </div>
+      <div class="rm-bar-bg">
+        <div class="rm-bar-fill" style="width:${c.pct}%; background:${d.color};"></div>
+      </div>
+    </div>`).join('');
+
+  return `
+    <div class="rm-categories-box">
+      <p class="rm-cat-title">${d.catTitle}</p>
+      ${bars || '<p style="color:#666;font-size:.85em;">No data available</p>'}
+    </div>`;
+}
+
+function renderHtbPanel(d) {
+  const rows = [];
+
+  if (d.lastMachine) {
+    rows.push(`
+      <div class="rm-cat">
+        <div class="rm-cat-header">
+          <span>🖥️ ${d.lastMachine.name} <span style="color:${d.color};">· ${d.lastMachine.type}</span></span>
+          <span>${d.lastMachine.date ?? ''}</span>
+        </div>
+      </div>`);
+  }
+
+  if (d.lastChallenge) {
+    rows.push(`
+      <div class="rm-cat">
+        <div class="rm-cat-header">
+          <span>🚩 ${d.lastChallenge.name} <span style="color:${d.color};">· ${d.lastChallenge.category}</span></span>
+          <span>${d.lastChallenge.date ?? ''}</span>
+        </div>
+      </div>`);
+  }
+
+  return `
+    <div class="rm-categories-box">
+      <p class="rm-cat-title">Last activity</p>
+      ${rows.join('') || '<p style="color:#666;font-size:.85em;">No data available</p>'}
     </div>`;
 }
 
